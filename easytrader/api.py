@@ -5,6 +5,7 @@ import sys
 from easytrader.log import logger
 from easytrader.mock_trader import MockTrader
 from easytrader.eastmoney_trader import EastMoneyTrader
+from easytrader.simulate_trader import SimulateTrader
 
 if sys.version_info <= (3, 5):
     raise TypeError("不支持 Python3.5 及以下版本，请升级")
@@ -30,6 +31,8 @@ def use(broker, debug=False, **kwargs):
 
     if broker.lower() in ["eastmoney", "东财", "东方财富"]:
         return EastMoneyTrader(**kwargs)
+    if broker.lower() in ["simulate"]:
+        return SimulateTrader()
 
     raise NotImplementedError
 

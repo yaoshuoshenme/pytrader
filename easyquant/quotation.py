@@ -19,6 +19,11 @@ from pandas import DataFrame
 from easyquotation.bar import get_price
 
 
+
+
+
+
+
 class Quotation(metaclass=abc.ABCMeta):
     """行情获取基类"""
 
@@ -55,6 +60,12 @@ class Quotation(metaclass=abc.ABCMeta):
     def get_price(self, security: str, date):
         df = self.get_bars(security, 1, unit='1d', end_dt=date, fields=['close', 'date'])
         return df.close[0]
+
+
+
+
+
+
 
 
 def is_shanghai(stock_code):
@@ -121,6 +132,18 @@ class TushareQuotation(Quotation):
         return df
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 class JQDataQuotation(Quotation):
     """
     JQData行情
@@ -181,6 +204,17 @@ class JQDataQuotation(Quotation):
         return df[df.index <= end_dt] if "m" in unit else df
 
 
+
+
+
+
+
+
+
+
+
+
+
 class FreeOnlineQuotation(Quotation):
     """
     实时行情
@@ -199,6 +233,14 @@ class FreeOnlineQuotation(Quotation):
         return df
 
 
+
+
+
+
+
+
+
+
 def use_quotation(source: str) -> Quotation:
     """
     对外API，行情工厂
@@ -210,6 +252,15 @@ def use_quotation(source: str) -> Quotation:
     if source in ["tushare"]:
         return TushareQuotation()
     return FreeOnlineQuotation()
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

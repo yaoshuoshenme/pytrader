@@ -19,6 +19,9 @@ from easytrader.utils.stock import get_30_date
 
 
 # noinspection PyIncorrectDocstring
+from persistence.stock_db import PerTrade
+
+
 class WebTrader(metaclass=abc.ABCMeta):
     global_config_path = os.path.dirname(__file__) + "/config/global.json"
     config_path = ""
@@ -67,11 +70,11 @@ class WebTrader(metaclass=abc.ABCMeta):
 
     def calculate_cost(self, amount, price, entrust_bs="B"):
         total = amount * price
-        cost = max(5, total * 0.003)
+        cost = max(5, total * PerTrade().buy_cost)
         if entrust_bs == "B":
             return cost
 
-        return cost + total * 0.001
+        return cost + total * PerTrade().close_tax
 
     def auto_login(self, limit=10):
         """实现自动登录
@@ -207,7 +210,27 @@ class WebTrader(metaclass=abc.ABCMeta):
         """
         pass
 
+    def buy_spec(self, balance, security, price=0, amount=0, volume=0, entrust_prop=0):
+        """买入卖出股票
+        :param security: 股票代码
+        :param price: 买入价格
+        :param amount: 买入股数
+        :param volume: 买入总金额 由 volume / price 取整， 若指定 price 则此参数无效
+        :param entrust_prop:
+        """
+        pass
+
     def sell(self, security, price=0, amount=0, volume=0, entrust_prop=0):
+        """卖出股票
+        :param security: 股票代码
+        :param price: 卖出价格
+        :param amount: 卖出股数
+        :param volume: 卖出总金额 由 volume / price 取整， 若指定 price 则此参数无效
+        :param entrust_prop:
+        """
+        pass
+
+    def sell_spec(self, balance, security, price=0, amount=0, volume=0, entrust_prop=0):
         """卖出股票
         :param security: 股票代码
         :param price: 卖出价格
@@ -278,4 +301,11 @@ class WebTrader(metaclass=abc.ABCMeta):
         return response_data
 
     def check_login_status(self, return_data):
+        pass
+
+    def shutdown(self):
+        """
+        关闭进程前调用该函数
+        :return:
+        """
         pass

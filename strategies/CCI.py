@@ -28,6 +28,7 @@ class Strategy(StrategyTemplate):
             self.quotation_engine.watch(stock_code)
 
     def on_bar(self, context: Context, data: Dict[str, DataFrame]):
+
         balance = context.balance[0]
         positions = context.position
 
@@ -72,6 +73,7 @@ class Strategy(StrategyTemplate):
                     # 如果卖过1次，需要等买了后再卖
                     amount = stock_pos.current_amount
                     self.log.info("RSI拐点，卖出 %s元 %s股" % (latest.close[0], amount))
+                    # 卖出
                     self.user.sell(stock_code, price=latest.close[0],
                                    amount=amount)
                     self.log.info('%s 盈亏: %s ' % (stock_code,

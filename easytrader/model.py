@@ -76,10 +76,10 @@ class PerTrade:
     """
     交易费用
     """
-    # 买入时佣金万分之三，卖出时佣金万分之三加千分之一印花税, 每笔交易佣金最低扣5块钱
+    # 买入时佣金万分之2.5，卖出时佣金万分之2.5加千分之一印花税, 每笔交易佣金最低扣5块钱
     close_tax=0.001
-    buy_cost = 0.003
-    sell_cost = 0.004
+    buy_cost = 0.00025
+    sell_cost = close_tax + buy_cost
     min_cost = 5
 
 

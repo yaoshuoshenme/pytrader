@@ -143,6 +143,28 @@ class Context:
         """
         return self.user.sell(security, price=price, amount=amount, volume=volume, entrust_prop=entrust_prop)
 
+    def buy_spec(self, balance, security, price=0, amount=0, volume=0, entrust_prop=0):
+        """买入卖出股票
+        :param balance: 指定账户
+        :param security: 股票代码
+        :param price: 买入价格
+        :param amount: 买入股数
+        :param volume: 买入总金额 由 volume / price 取整， 若指定 price 则此参数无效
+        :param entrust_prop:
+        """
+        return self.user.buy_spec(balance, security, price=price, amount=amount, volume=volume, entrust_prop=entrust_prop)
+
+    def sell_spec(self, balance, security, price=0, amount=0, volume=0, entrust_prop=0):
+        """卖出股票
+        :param balance: 指定账户
+        :param security: 股票代码
+        :param price: 卖出价格
+        :param amount: 卖出股数
+        :param volume: 卖出总金额 由 volume / price 取整， 若指定 price 则此参数无效
+        :param entrust_prop:
+        """
+        return self.user.sell_spec(security, price=price, amount=amount, volume=volume, entrust_prop=entrust_prop)
+
     def __getattr__(self, func_name):
         def talib_func(*args, **kwargs):
             func = getattr(talib, func_name)

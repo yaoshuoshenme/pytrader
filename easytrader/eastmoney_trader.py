@@ -100,6 +100,7 @@ class EastMoneyTrader(webtrader.WebTrader):
         自动登录
         :return:
         """
+        print("账户配置：============》", self.account_config)
         while True:
             identifyCode = self._recognize_verification_code()
             login_res = self.s.post(self.config['authentication'], data={
@@ -361,7 +362,6 @@ class EastMoneyTrader(webtrader.WebTrader):
         :param entrust_prop:
         """
         return self._trade(security, price, amount, volume, "B")
-
     def sell(self, security, price=0, amount=0, volume=0, entrust_prop=0):
         """卖出股票
         :param security: 股票代码

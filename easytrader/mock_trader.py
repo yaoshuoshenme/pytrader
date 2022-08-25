@@ -29,21 +29,23 @@ class MockTrader(webtrader.WebTrader):
         # 资金换算倍数
         self.multiple = 1000000
 
+        # 账户
         self.assets = [
             Balance(
-                asset_balance=self.multiple,
-                current_balance=self.multiple,
-                enable_balance=self.multiple,
-                frozen_balance=0,
-                market_value=0,
+                asset_balance=self.multiple, #初始资金
+                current_balance=self.multiple, #当前资金
+                enable_balance=self.multiple, #可用资金
+                frozen_balance=0,#冻结资金
+                market_value=0, #市值
                 pre_interest=0.25,
                 money_type=u"人民币")
         ]
 
+        # 持仓
         self.positions: List[Position] = []
-
+        # 委托
         self.entrusts: List[Entrust] = []
-
+        # 账单
         self.deals: List[Deal] = []
 
     def auto_login(self, **kwargs):
@@ -64,10 +66,10 @@ class MockTrader(webtrader.WebTrader):
 
         market_value = 0
         for position in self.positions:
-            price = prices[position.stock_code]
+            price = prices[position.stock_code] #现价
             position.update(price)
             market_value += position.market_value
-        self.assets[0].market_value = market_value
+        self.assets[0].market_value = market_value # 市值
         self.assets[0].update(market_value, self.assets[0].enable_balance)
 
     def set_quotation(self, quotation):

@@ -42,6 +42,7 @@ class MainEngine:
         self.log = log_handler
         self.bar_type = bar_type
         self.broker = broker
+        # 初始化行情
         self.quotation = use_quotation(quotation)
 
         # 登录账户
@@ -117,8 +118,9 @@ class MainEngine:
 
         current_dt = start_date_time
 
+        # 开始回测
         while current_dt <= end_date_time:
-
+            # 跳过非交易日
             if not self.context.is_trade_date(current_dt.strftime("%Y-%m-%d")):
                 current_dt = current_dt + timedelta(days=1)
                 continue
@@ -127,8 +129,9 @@ class MainEngine:
             self.context.user.set_time(current_dt)
             # open
             self.context.change_dt(current_dt + timedelta(hours=9, minutes=30))
+            # 出发开盘策略
             strategy.on_open(self.context)
-
+            # 获取行情
             self.mock_quotation(current_dt, strategy)
 
             self.context.change_dt(current_dt + timedelta(hours=15, minutes=30))
@@ -141,6 +144,7 @@ class MainEngine:
         current_time = end_date + timedelta(hours=9, minutes=30)
         end_date = end_date + timedelta(hours=15)
 
+        # 分钟线
         if "m" in self.bar_type:
             minute = int(self.bar_type.replace("m", ""))
             # 9点半开始
@@ -152,19 +156,22 @@ class MainEngine:
         else:
             # day = int
             self.context.change_dt(end_date)
-            quotation_data = self.quotation_engine.fetch_quotation(end_date=end_date)
+            quotation_data = self.quotation_engine.fetch_quotation(end_date=end_date) # 收盘数据
+            # 更新市值
             self.user.update_balance(quotation_data)
             # 更新持仓
             strategy.on_bar(self.context, quotation_data)
 
     def load(self, names, strategy_file):
         with self.lock:
+            # 策略修改事时间
             mtime = os.path.getmtime(os.path.join('strategies', strategy_file))
 
             # 是否需要重新加载
             reload = False
-
+            # 策略文件名，不包含后缀
             strategy_module_name = os.path.basename(strategy_file)[:-3]
+            # 加载策略模块到内存
             new_module = lambda strategy_module_name: importlib.import_module('.' + strategy_module_name, 'strategies')
             strategy_module = self._modules.get(
                 strategy_file,  # 从缓存中获取 module 实例
@@ -188,10 +195,13 @@ class MainEngine:
             if reload:
                 strategy_module = importlib.reload(strategy_module)
 
+            # 文件名和模块映射
             self._modules[strategy_file] = strategy_module
 
             strategy_class = getattr(strategy_module, 'Strategy')
+            # 加载策略，注册事件
             if names is None or strategy_class.name in names:
+                # 策略类缓存
                 self.strategies[strategy_module_name] = strategy_class
                 # 缓存加载信息
                 new_strategy = strategy_class(user=self.user, log_handler=self.log, main_engine=self)
@@ -220,7 +230,8 @@ class MainEngine:
 
     def load_strategy(self, names=None):
         """动态加载策略
-        :param names: 策略名列表，元素为策略的 name 属性"""
+        :param names: 策略名列表，元素为策略的 name 属性
+        """
         s_folder = 'strategies'
         self._names = names
         strategies = os.listdir(s_folder)
