@@ -68,3 +68,7 @@ docs/_build/
 # PyBuilder
 target/
 vcode
+
+#vscode
+.history/
+.vscode/
