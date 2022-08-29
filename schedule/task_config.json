@@ -1,0 +1,9 @@
+[
+    {
+        "task_name":"StockBaseDataSyncTask",
+        "trigger":"interval",
+        "triggerArgs":{
+            "seconds":5
+        }
+    }
+]
