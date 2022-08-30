@@ -1,6 +1,3 @@
 from schedule.task.simple_task import register_task
-from stock_base_sync_task import StockBaseDataSyncTask
 from simple_task import SimpleTask
 
-
-register_task(StockBaseDataSyncTask)
