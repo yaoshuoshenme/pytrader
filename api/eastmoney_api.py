@@ -34,26 +34,9 @@ class EastMoneyApi(object):
     def request(self, method, path, params={}, default={"code": -1}, custom_cookies={}):
         endpoint = "{}{}".format(BASE_URL, path)
         data = default
-        mk_cookie = lambda k, v: Cookie(
-            version=0,
-            name=k,
-            value=v,
-            port=None,
-            port_specified=False,
-            domain="quote.eastmoney.com",
-            domain_specified=True,
-            domain_initial_dot=False,
-            path="/",
-            path_specified=True,
-            secure=False,
-            expires=None,
-            discard=False,
-            comment=None,
-            comment_url=None,
-            rest={},
-        )
+
         for k, v in custom_cookies.items():
-            cookie = mk_cookie(k, v)
+            cookie = self._make_cookie(k, v)
             self.session.cookies.set_cookie(cookie)
 
         resp = None
@@ -74,6 +57,27 @@ class EastMoneyApi(object):
         elif method == "POST":
             resp = self.session.post(endpoint, params=data, headers=self.header, timeout=DEFAULT_TIMEOUT)
         return resp
+
+    @staticmethod
+    def _make_cookie(k, v):
+        return Cookie(
+            version=0,
+            name=k,
+            value=v,
+            port=None,
+            port_specified=False,
+            domain="quote.eastmoney.com",
+            domain_specified=True,
+            domain_initial_dot=False,
+            path="/",
+            path_specified=True,
+            secure=False,
+            expires=None,
+            discard=False,
+            comment=None,
+            comment_url=None,
+            rest={},
+        )
 
     def get_stock_code(self):
         """获取股票代码,包括公司名称，上市时间等
