@@ -23,7 +23,7 @@ class EastMoneyApi(object):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
         }
         cookie_jar = MozillaCookieJar(Constant.cookie_path)
-        cookie_jar.load()
+        # cookie_jar.load()
         self.session = requests.Session()
         self.session.cookies = cookie_jar
         for cookie in cookie_jar:
@@ -97,7 +97,7 @@ class EastMoneyApi(object):
         """
         pass
 
-    def get_limit_up_pool(self, date: str = None, start=None, end=None):
+    def get_limit_up_pool(self, date: str = None):
         """获取涨停池信息
 
         Args:

@@ -18,6 +18,22 @@ class Constant:
     storage_path = os.path.join(conf_dir, "database.json")
 
     # 东方财富指标映射
-    east_money_keymap = {
+    eastmoney_zt_keymap = {
         'c': '股票代码',
+        'n': '股票名称',
+        'p': '价格 * 1000',
+        'zdp': '涨跌幅',
+        'amount': '成交额',
+        'ltsz': '流通市值',
+        'tshare': '总市值',
+        'hs': '换手',
+        'lbc': '连板数',
+        'fbt': '首次封板时间',
+        'lbt': '最后封板时间',
+        'fund': '封板资金',
+        'zbc': '炸板次数',
+        'hybk': '行业板块',
+        'zttj': '涨停统计',
+        'days': '几天',
+        'ct': '几板'
     }

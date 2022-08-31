@@ -9,6 +9,7 @@ class DBModel:
     def flush(self):
         pass
 
+
 @dataclass
 class Balance(DBModel):
     """
@@ -38,15 +39,14 @@ class Balance(DBModel):
 
     def flush(self):
         sql = "update balance set asset_balance = %s, current_balance = %s, enable_balance = %s, frozen_balance = %s," \
-              "market_value = %s where id = %d" % (str(self.asset_balance), str(self.current_balance),str(self.enable_balance),
-                                                   str(self.frozen_balance),str(self.market_value), self.id)
+              "market_value = %s where id = %d" % (
+              str(self.asset_balance), str(self.current_balance), str(self.enable_balance),
+              str(self.frozen_balance), str(self.market_value), self.id)
         DBConfig().update(sql)
 
-
-    def _insert_db(self, name='default', asset_balance = 1000000):
+    def _insert_db(self, name='default', asset_balance=1000000):
         sql = "insert into balance (`name`, `asset_balance`) values ('%s', '%s')" % (name, asset_balance)
         self.id = DBConfig().insert(sql)
-
 
 
 @dataclass
@@ -74,8 +74,8 @@ class Position(DBModel):
     stock_code: str
     # 股票名称
     stock_name: str
-    #状态, 1有效，0无效
-    status:int = 1
+    # 状态, 1有效，0无效
+    status: int = 1
 
     def __init__(self, balance_id, current_amount, cost_price, last_price, market_value,
                  stock_code, stock_name, enable_amount=0, income_balance=0, status=1):
@@ -98,17 +98,17 @@ class Position(DBModel):
         if self.id:
             sql = "update `position` set current_amount = %s, enable_amount = %s, income_balance = %s, cost_price = %s," \
                   "last_price = %s, market_value = %s, status = %d where id = %d" % (
-                  str(self.current_amount), str(self.enable_amount), str(self.income_balance),
-                  str(self.cost_price), str(self.last_price),str(self.market_value),self.status, self.id)
+                      str(self.current_amount), str(self.enable_amount), str(self.income_balance),
+                      str(self.cost_price), str(self.last_price), str(self.market_value), self.status, self.id)
             DBConfig().update(sql)
         else:
             sql = "insert into `position` (balance_id, current_amount, enable_amount,income_balance, cost_price, last_price," \
                   "market_value, stock_code, stock_name, status) values (%d, %d, %d, '%s','%s','%s','%s','%s','%s',,%d)" % (
-                self.balance_id, self.current_amount, self.enable_amount, str(self.income_balance), str(self.cost_price),
-                str(self.last_price), str(self.market_value), self.stock_code, self.stock_name, self.status
-            )
+                      self.balance_id, self.current_amount, self.enable_amount, str(self.income_balance),
+                      str(self.cost_price),
+                      str(self.last_price), str(self.market_value), self.stock_code, self.stock_name, self.status
+                  )
             self.id = DBConfig().insert(sql)
-
 
 
 @dataclass
@@ -144,13 +144,15 @@ class Entrust(DBModel):
         query_sql = "select entrust_no from entrust where entrust_no = '%s'" % self.entrust_no
         data = db.get_one(query_sql)
         if data:
-            sql = "update `entrust` set entrust_status = %s where entrust_no = %s" % (self.entrust_status, self.entrust_status)
+            sql = "update `entrust` set entrust_status = %s where entrust_no = %s" % (
+            self.entrust_status, self.entrust_status)
         else:
             sql = "insert into entrust (balance_id, entrust_no, bs_type, entrust_amount, entrust_price, report_time," \
                   "entrust_status, stock_code, stock_name,cost) values (%d, '%s', '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s')" % (
-                self.balance_id, self.entrust_no, self.bs_type, self.entrust_amount, str(self.entrust_price), self.report_time,
-                self.entrust_status, self.stock_code, self.stock_name, str(self.cost)
-            )
+                      self.balance_id, self.entrust_no, self.bs_type, self.entrust_amount, str(self.entrust_price),
+                      self.report_time,
+                      self.entrust_status, self.stock_code, self.stock_name, str(self.cost)
+                  )
         db.update(sql)
 
 
@@ -165,6 +167,7 @@ class PerTrade:
     buy_cost = 0.00025
     sell_cost = close_tax + buy_cost
     min_cost = 5
+
 
 @dataclass
 class Deal(DBModel):
@@ -185,7 +188,7 @@ class Deal(DBModel):
     deal_amount: int
     # 成交价格
     deal_price: float
-    #委托价格
+    # 委托价格
     entrust_price: float
     # 成交时间,HHmmss
     deal_time: str
@@ -200,9 +203,9 @@ class Deal(DBModel):
         if db.get_one(query_sql):
             return
         sql = "insert into deal (balance_id, deal_no, entrust_no, bs_type,entrust_amount, deal_amount,deal_price, entrust_price, " \
-              "deal_time, stock_code, stock_name ) values ('%s','%s','%s','%s',%d,%d,'%s','%s','%s','%s','%s',)" %(
-            str(self.balance_id), self.deal_no, self.entrust_no, self.bs_type, self.entrust_amount, self.deal_amount,
-            str(self.deal_price), str(self.entrust_price), self.deal_time, self.stock_code, self.stock_name
-        )
+              "deal_time, stock_code, stock_name ) values ('%s','%s','%s','%s',%d,%d,'%s','%s','%s','%s','%s',)" % (
+                  str(self.balance_id), self.deal_no, self.entrust_no, self.bs_type, self.entrust_amount,
+                  self.deal_amount,
+                  str(self.deal_price), str(self.entrust_price), self.deal_time, self.stock_code, self.stock_name
+              )
         db.update(sql)
-
