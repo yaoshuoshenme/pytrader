@@ -10,9 +10,9 @@ class RedisIo(object):
     def __init__(self, conf):
         self.config = self.file2dict(conf)
         if self.config['passwd'] is None:
-            self.r = redis.Redis(host=self.config['redisip'], port=self.config['redisport'], db=self.config['db'])
+            self.r = redis.Redis(host=self.config['redisip'], port=self.config['redisport'], db=self.config['mysql'])
         else:
-            self.r = redis.Redis(host=self.config['redisip'], port=self.config['redisport'], db=self.config['db'], password = self.config['passwd'])
+            self.r = redis.Redis(host=self.config['redisip'], port=self.config['redisport'], db=self.config['mysql'], password = self.config['passwd'])
     
     def file2dict(self, path):
         #读取配置文件

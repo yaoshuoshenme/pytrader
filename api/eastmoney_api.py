@@ -5,6 +5,7 @@ from http.cookiejar import Cookie, CookieJar, MozillaCookieJar
 from common.constant import Constant
 import time
 from http.client import HTTPConnection
+import random
 
 log = getLogger(__name__)
 
@@ -31,8 +32,9 @@ class EastMoneyApi(object):
                 cookie_jar.clear()
                 break
 
-    def request(self, method, path, params={}, default={"code": -1}, custom_cookies={}):
-        endpoint = "{}{}".format(BASE_URL, path)
+    def request(self, method, path, params={}, default={"code": -1}, custom_cookies={}, host=None):
+        base_url = host if host else BASE_URL
+        endpoint = "{}{}".format(base_url, path)
         data = default
 
         for k, v in custom_cookies.items():
@@ -84,10 +86,26 @@ class EastMoneyApi(object):
         """
         pass
 
-    def get_block_info(self):
+    def get_block_rank(self):
         """获取板块信息
         """
-        pass
+        host = "http://{}.push2.eastmoney.com".format(random.randint(1, 99))
+        path = "/api/qt/clist/get"
+        params = {
+            "pn": 1,
+            "pz": 20,
+            "po": 1,
+            "np": 1,
+            "ut": "bd1d9ddb04089700cf9c27f6f7426281",
+            "fltt": 2,
+            "invt": 2,
+            "wbp2u": "8359336373316004|0|1|0|web",
+            "fid": "f3",
+            "fs": "m:90",
+            "fields": "f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152,f133,f104,f105",
+            "_": int(round(time.time() * 1000)),
+        }
+        return self.request(method="GET", host=host, path=path, params=params)
 
     def get_stock_rank(self, reverse=False):
         """获取股票涨幅排行榜

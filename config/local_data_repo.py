@@ -8,9 +8,8 @@ from pandas import DataFrame
 from common.exception import StockCommonException
 
 BASE_PATH = os.getcwd()
-LOCAL_DATA_PATH = os.path.join(BASE_PATH, "/config/datas")
-print(BASE_PATH)
-print(LOCAL_DATA_PATH)
+LOCAL_DATA_PATH = os.path.join(BASE_PATH, "config/datas")
+
 
 class LocalDataRepo(object):
 
@@ -20,7 +19,6 @@ class LocalDataRepo(object):
         读取数据
         """
         path = os.path.join(LOCAL_DATA_PATH, file_name)
-        print(path)
         if file_type == 'json':
             with open(path, mode='r', encoding='utf-8') as f:
                 return json.load(f)
@@ -32,6 +30,7 @@ class LocalDataRepo(object):
     @staticmethod
     def write_data(data, file_path, file_type):
         path = os.path.join(LOCAL_DATA_PATH, file_path)
+        print(path)
         if file_type == 'json':
             with open(path) as f:
                 json.dump(data, f)
@@ -39,3 +38,8 @@ class LocalDataRepo(object):
             data.to_excel(path)
         else:
             raise StockCommonException('not support data type')
+
+    @staticmethod
+    def read_json_2_df(file_name):
+        path = os.path.join(LOCAL_DATA_PATH, file_name)
+        return pd.read_json(path, encoding='utf-8')

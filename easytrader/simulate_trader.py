@@ -5,10 +5,9 @@ import uuid
 from typing import List
 
 from easytrader import webtrader, exceptions
-from persistence.db_config import DBConfig
-from persistence.stock_db import Balance, Entrust, Position, Deal
-import json
-from threading import Thread, Lock
+from persistence.mysql.db_config import DBHelper
+from persistence.stock_db import Entrust, Position, Deal
+from threading import Lock
 
 
 class SimulateTrader(webtrader.WebTrader):
@@ -147,7 +146,7 @@ class SimulateTrader(webtrader.WebTrader):
         加载账户信息
         """
         # 账户信息
-        balance_data = DBConfig().get_all("select * from balance where 1=1")
+        balance_data = DBHelper().get_all("select * from balance where 1=1")
         for b in balance_data:
             self.balance_account[b['id']] = b
             self.balance_lock[b['id']] = Lock()
@@ -157,7 +156,7 @@ class SimulateTrader(webtrader.WebTrader):
         """
         加载持仓信息
         """
-        position_data = DBConfig().get_all("select * from positions where 1=1")
+        position_data = DBHelper().get_all("select * from positions where 1=1")
         for d in position_data:
             if self.position_dic[d['balance_id']] == None:
                 self.position_dic[d['balance_id']] = []
@@ -173,7 +172,7 @@ class SimulateTrader(webtrader.WebTrader):
         """
         加载委托信息
         """
-        entrusts_data = DBConfig().get_all("select * from entrusts where 1=1")
+        entrusts_data = DBHelper().get_all("select * from entrusts where 1=1")
         for d in entrusts_data:
             if self.entrusts_dic[d['balance_id']] == None:
                 self.entrusts_dic[d['balance_id']] = []
@@ -189,7 +188,7 @@ class SimulateTrader(webtrader.WebTrader):
         """
         加载账单信息
         """
-        deal_data = DBConfig().get_all("select * from deals where 1=1")
+        deal_data = DBHelper().get_all("select * from deals where 1=1")
         for d in deal_data:
             if self.deal_dic[d['balance_id']] == None:
                 self.deal_dic[d['balance_id']] = []

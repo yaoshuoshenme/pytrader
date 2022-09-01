@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from dataclasses import dataclass
-from .db_config import *
+from persistence.mysql.db_config import *
 
 
 class DBModel:
@@ -42,11 +42,11 @@ class Balance(DBModel):
               "market_value = %s where id = %d" % (
               str(self.asset_balance), str(self.current_balance), str(self.enable_balance),
               str(self.frozen_balance), str(self.market_value), self.id)
-        DBConfig().update(sql)
+        DBHelper().update(sql)
 
     def _insert_db(self, name='default', asset_balance=1000000):
         sql = "insert into balance (`name`, `asset_balance`) values ('%s', '%s')" % (name, asset_balance)
-        self.id = DBConfig().insert(sql)
+        self.id = DBHelper().insert(sql)
 
 
 @dataclass
@@ -100,7 +100,7 @@ class Position(DBModel):
                   "last_price = %s, market_value = %s, status = %d where id = %d" % (
                       str(self.current_amount), str(self.enable_amount), str(self.income_balance),
                       str(self.cost_price), str(self.last_price), str(self.market_value), self.status, self.id)
-            DBConfig().update(sql)
+            DBHelper().update(sql)
         else:
             sql = "insert into `position` (balance_id, current_amount, enable_amount,income_balance, cost_price, last_price," \
                   "market_value, stock_code, stock_name, status) values (%d, %d, %d, '%s','%s','%s','%s','%s','%s',,%d)" % (
@@ -108,7 +108,7 @@ class Position(DBModel):
                       str(self.cost_price),
                       str(self.last_price), str(self.market_value), self.stock_code, self.stock_name, self.status
                   )
-            self.id = DBConfig().insert(sql)
+            self.id = DBHelper().insert(sql)
 
 
 @dataclass
@@ -140,7 +140,7 @@ class Entrust(DBModel):
     cost: float
 
     def flush(self):
-        db = DBConfig()
+        db = DBHelper()
         query_sql = "select entrust_no from entrust where entrust_no = '%s'" % self.entrust_no
         data = db.get_one(query_sql)
         if data:
@@ -198,7 +198,7 @@ class Deal(DBModel):
     stock_name: str
 
     def flush(self):
-        db = DBConfig()
+        db = DBHelper()
         query_sql = "select deal_no from deal where deal_no = '%s'" % self.deal_no
         if db.get_one(query_sql):
             return

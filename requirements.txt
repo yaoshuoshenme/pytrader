@@ -11,3 +11,7 @@ easyquotation
 arrow
 tushare
 xlrd
+apscheduler
+openpyxl
+pymysql
+DBUtils==3.0.2

@@ -20,7 +20,7 @@ class TushareApi(object):
         """获取所有code"""
         pass
 
-    def get_trade_days(self, start_date='20220901', end_date='20320901'):
+    def get_trade_days(self, start_date='20100901', end_date='20320901'):
         """
         exchange	    str	Y	交易所 SSE上交所 SZSE深交所
         cal_date	    str	Y	日历日期
