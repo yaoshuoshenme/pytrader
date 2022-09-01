@@ -59,7 +59,7 @@ class MyPooledDB(object):
 
     def get_conn(self):
         conn = self._pool.connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursors.DictCursor)
         return conn, cursor
 
     # 创建数据库连接conn和游标cursor
@@ -77,38 +77,59 @@ class DBHelper(object):
     def __init__(self):
         self.poolDB = MyPooledDB()
 
-    def get_one(self, sql):
+    def get_one(self, sql, params: list = None):
         con, cursor = self.poolDB.get_conn()
-        cursor = con.cursor(cursors.DictCursor)
-        cursor.execute(sql)
+        if params:
+            cursor.execute(sql, params)
+        else:
+            cursor.execute(sql)
         data = cursor.fetchone()
         cursor.close()
         con.close()
         return data
 
-    def get_all(self, sql):
-        con = self.get_connection()
-        cursor = con.cursor(cursors.DictCursor)
-        cursor.execute(sql)
-        data = cursor.fetchall()
+    def get_all(self, sql, params: list = None):
+        con, cursor = self.poolDB.get_conn()
+        if params:
+            count = cursor.execute(sql, params)
+        else:
+            count = cursor.execute(sql)
+        data = cursor.fetchall() if count > 0 else False
         cursor.close()
         con.close()
         return data
 
     def update(self, sql):
-        con = self.get_connection()
-        cursor = con.cursor()
+        con, cursor = self.poolDB.get_conn()
         cursor.execute(sql)
         con.commit()
         cursor.close()
         con.close()
 
-    def insert(self, sql):
-        con = self.get_connection()
-        cursor = con.cursor()
-        cursor.execute(sql)
-        id = cursor.lastrowid
+    def insert(self, sql, params: list = None):
+        con, cursor = self.poolDB.get_conn()
+        if params:
+            cursor.execute(sql, params)
+        else:
+            cursor.execute(sql)
+        d_id = cursor.lastrowid
         con.commit()
         cursor.close()
         con.close()
-        return id
+        return d_id
+
+    def batch_insert(self, sql, params=None):
+        con, cursor = self.poolDB.get_conn()
+        data = []
+        if params:
+            for p in params:
+                d_id = cursor.execute(sql, p)
+                data.append(d_id)
+        else:
+            d_id = cursor.execute(sql)
+            data.append(d_id)
+        con.commit()
+        cursor.close()
+        con.close()
+        return data
+
