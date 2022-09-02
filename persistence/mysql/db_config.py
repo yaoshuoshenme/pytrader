@@ -3,7 +3,7 @@
 import os
 
 from dbutils.pooled_db import PooledDB
-from pymysql import cursors
+from pymysql import cursors, OperationalError
 
 from common.Singleton import Singleton
 from easytrader.utils.misc import file2dict
@@ -121,15 +121,21 @@ class DBHelper(object):
     def batch_insert(self, sql, params=None):
         con, cursor = self.poolDB.get_conn()
         data = []
-        if params:
-            for p in params:
-                d_id = cursor.execute(sql, p)
-                data.append(d_id)
-        else:
-            d_id = cursor.execute(sql)
-            data.append(d_id)
-        con.commit()
-        cursor.close()
-        con.close()
-        return data
+        try:
 
+            if params:
+                for p in params:
+                    d_id = cursor.execute(sql, p)
+                    data.append(d_id)
+            else:
+                d_id = cursor.execute(sql)
+                data.append(d_id)
+            con.commit()
+            cursor.close()
+            con.close()
+        except OperationalError as e:
+            con.rollback()
+            cursor.close()
+            con.close()
+
+        return data

@@ -1,10 +1,13 @@
-from api.eastmoney_api import EastMoneyApi
-from api.tushare_api import TushareApi
-from config.local_data_repo import LocalDataRepo
-import json
 import os
 
-easy_api = EastMoneyApi()
+
+import logging
+from common.simplelog import SimpleLog
+from threading import Event
+
+
+
+# easy_api = EastMoneyApi()
 # data = easy_api.get_limit_up_pool('20220830')
 # print(json.dumps(data))
 
@@ -16,7 +19,10 @@ easy_api = EastMoneyApi()
 
 # data = LocalDataRepo.read_json_2_df('block_code.json')
 # print(data)
-data = easy_api.get_block_rank()
-print(data)
+# data = easy_api.get_block_rank()
+# print(data)
 
+log = SimpleLog.get(__file__)
+log.info("运行成功")
 
+Event().wait()
