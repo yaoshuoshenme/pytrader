@@ -25,4 +25,6 @@ from threading import Event
 log = SimpleLog.get(__file__)
 log.info("运行成功")
 
+log.error("运行出错了")
+
 Event().wait()

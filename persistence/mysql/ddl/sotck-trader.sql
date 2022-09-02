@@ -1,4 +1,5 @@
-create database stock_trader character set UTF8
+
+Create DATABASE stock_trader CHARACTER SET UTF8;
 
 USE stock_trader;
 
