@@ -4,7 +4,7 @@ import os
 import logging
 from common.simplelog import SimpleLog
 from threading import Event
-
+from schedule.task import task_scheduler as schduler
 
 
 # easy_api = EastMoneyApi()
@@ -22,9 +22,9 @@ from threading import Event
 # data = easy_api.get_block_rank()
 # print(data)
 
-log = SimpleLog.get(__file__)
-log.info("运行成功")
+schduler.init_task()
+schduler.run_all_task()
 
-log.error("运行出错了")
 
 Event().wait()
+
