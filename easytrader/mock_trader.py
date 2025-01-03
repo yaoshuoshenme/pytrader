@@ -17,7 +17,6 @@ from easytrader.log import logger
 from easytrader.model import Balance, Position, Entrust, Deal
 from easytrader.utils.misc import parse_cookies_str
 
-import ddddocr
 
 
 class MockTrader(webtrader.WebTrader):

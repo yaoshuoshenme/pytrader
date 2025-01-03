@@ -14,5 +14,7 @@ class TdxQuotation(Quotation):
     def get_bars(self, security, count, unit='1d',
                  fields=['date', 'open', 'high', 'low', 'close', 'volume'],
                  include_now=False, end_dt=None) -> DataFrame:
+        """
+        获取历史数据(包含快照数据), 可查询单个标的多个数据字段
+        """
         pass
-

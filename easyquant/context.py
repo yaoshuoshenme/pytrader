@@ -2,7 +2,7 @@
 import datetime
 from typing import List
 
-from easyquant.quotation import Quotation
+from easyquant.quotation.quotation import Quotation
 from easytrader.webtrader import WebTrader
 from easytrader.model import *
 

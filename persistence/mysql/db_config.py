@@ -3,7 +3,7 @@
 import os
 
 from dbutils.pooled_db import PooledDB
-from pymysql import cursors, OperationalError
+import pymysql
 
 from common.Singleton import Singleton
 from easytrader.utils.misc import file2dict
@@ -25,7 +25,7 @@ DB_POOL_CONFIG = {
     # 一个可选的SQL命令列表用于准备每个会话
     "set_session": None,
     # 使用连接数据库的模块
-    "creator": "pymysql"
+    "creator": pymysql
 }
 
 
@@ -51,15 +51,15 @@ class MyPooledDB(object):
             host=self.host,
             port=self.port,
             user=self.user,
-            passwd=self.passwd,
+            passwd=self.password,
             db=self.database,
-            use_unicode=False,
+            use_unicode=True,
             charset='utf8'
         )
 
     def get_conn(self):
         conn = self._pool.connection()
-        cursor = conn.cursor(cursors.DictCursor)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         return conn, cursor
 
     # 创建数据库连接conn和游标cursor
@@ -77,7 +77,15 @@ class DBHelper(object):
     def __init__(self):
         self.poolDB = MyPooledDB()
 
-    def get_one(self, sql, params: list = None):
+    def _convert_result(self, data, return_type='dict'):
+        if not data or return_type == 'dict':
+            return data
+        if return_type == 'df':
+            import pandas as pd
+            return pd.DataFrame(data)
+        return data
+
+    def get_one(self, sql, params: list = None, return_type='dict'):
         con, cursor = self.poolDB.get_conn()
         if params:
             cursor.execute(sql, params)
@@ -86,9 +94,9 @@ class DBHelper(object):
         data = cursor.fetchone()
         cursor.close()
         con.close()
-        return data
+        return self._convert_result(data, return_type)
 
-    def get_all(self, sql, params: list = None):
+    def get_all(self, sql, params: list = None, return_type='dict'):
         con, cursor = self.poolDB.get_conn()
         if params:
             count = cursor.execute(sql, params)
@@ -97,7 +105,7 @@ class DBHelper(object):
         data = cursor.fetchall() if count > 0 else False
         cursor.close()
         con.close()
-        return data
+        return self._convert_result(data, return_type)
 
     def update(self, sql):
         con, cursor = self.poolDB.get_conn()
@@ -133,7 +141,7 @@ class DBHelper(object):
             con.commit()
             cursor.close()
             con.close()
-        except OperationalError as e:
+        except pymysql.OperationalError as e:
             con.rollback()
             cursor.close()
             con.close()

@@ -9,7 +9,7 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 from threading import Thread, Lock
 
-import easytrader
+from easytrader.api import use as use_trader
 from logbook import Logger, StreamHandler
 
 from .context import Context
@@ -17,7 +17,7 @@ from .event_engine import EventEngine, Event
 from .log_handler.default_handler import DefaultLogHandler
 from .push_engine.clock_engine import ClockEngine
 from .push_engine.quotation_engine import QuotationEngine
-from .quotation import use_quotation
+from .quotation.quotation_util import use_quotation
 from .strategy.strategyTemplate import StrategyTemplate
 
 log = Logger(os.path.basename(__file__))
@@ -25,7 +25,7 @@ StreamHandler(sys.stdout).push_application()
 
 PY_MAJOR_VERSION, PY_MINOR_VERSION = sys.version_info[:2]
 if (PY_MAJOR_VERSION, PY_MINOR_VERSION) < (3, 5):
-    raise Exception('Python 版本需要 3.5 或以上, 当前版本为 %s.%s 请升级 Python' % (PY_MAJOR_VERSION, PY_MINOR_VERSION))
+    raise RuntimeError('Python 版本需要 3.5 或以上, 当前版本为 %s.%s 请升级 Python' % (PY_MAJOR_VERSION, PY_MINOR_VERSION))
 
 ACCOUNT_OBJECT_FILE = 'account.session'
 
@@ -47,7 +47,7 @@ class MainEngine:
 
         # 登录账户
         if (broker is not None) and (need_data is not None):
-            self.user = easytrader.use(broker)
+            self.user = use_trader(broker)
             need_data_file = pathlib.Path(need_data)
             if need_data_file.exists():
                 self.user.prepare(need_data)
@@ -129,7 +129,7 @@ class MainEngine:
             self.context.user.set_time(current_dt)
             # open
             self.context.change_dt(current_dt + timedelta(hours=9, minutes=30))
-            # 出发开盘策略
+            # 触发开盘策略
             strategy.on_open(self.context)
             # 获取行情
             self.mock_quotation(current_dt, strategy)

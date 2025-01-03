@@ -16,7 +16,7 @@ mock_end_dt= "2021-11-11"
 
 
 m = easyquant.MainEngine(broker, need_data,
-                         quotation='tushare',
+                         quotation='local',
                          # quotation='jqdata',
                          bar_type="1d")
 

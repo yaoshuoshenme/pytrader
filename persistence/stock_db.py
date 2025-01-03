@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass
 from persistence.mysql.db_config import *
+from common.Singleton import Singleton
 
 
 class DBModel:
@@ -156,8 +157,8 @@ class Entrust(DBModel):
         db.update(sql)
 
 
-@dataclass
 @Singleton
+@dataclass
 class PerTrade:
     """
     交易费用

@@ -4,7 +4,7 @@ import time
 from threading import Thread
 
 from ..event_engine import EventEngine, Event
-from ..quotation import Quotation
+from ..quotation.quotation import Quotation
 
 
 class QuotationEngine:

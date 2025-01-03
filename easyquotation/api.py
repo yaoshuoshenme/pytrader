@@ -1,7 +1,7 @@
 # coding:utf8
 from easyquotation.basequotation import BaseQuotation
 
-from . import boc, daykline, hkquote, jsl, sina, tencent, timekline, sinatimekline, minutekline
+from . import daykline, hkquote, jsl, sina, tencent, timekline, sinatimekline, minutekline
 
 
 # pylint: disable=too-many-return-statements
@@ -12,8 +12,6 @@ def use(source) -> BaseQuotation:
         return jsl.Jsl()
     if source in ["qq", "tencent"]:
         return tencent.Tencent()
-    if source in ["boc"]:
-        return boc.Boc()
     if source in ["timekline"]:
         return timekline.TimeKline()
     if source in ["minutekline"]:
