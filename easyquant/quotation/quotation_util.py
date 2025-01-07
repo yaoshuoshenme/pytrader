@@ -15,6 +15,13 @@ def is_shanghai(stock_code):
                "132", "204", "5", "6", "9", "7")
     return stock_code.startswith(sh_head)
 
+# 把code转换成tushare的code
+def to_tushare_code(code):
+    if is_shanghai(code):
+        return code + ".SH"
+    else:
+        return code + ".SZ"
+
 def to_date_str(dt):
     if dt is None:
         return None
@@ -29,7 +36,7 @@ def use_quotation(source: str):
     from easyquant.quotation.free_online_qotation import FreeOnlineQuotation
 
     """
-    对外API，行情工厂
+    对外API,行情工厂
     :param source:
     :return:
     """

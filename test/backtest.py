@@ -11,8 +11,8 @@ broker = 'mock'
 need_data = 'account.json'
 
 #
-mock_start_dt = "2021-01-01"
-mock_end_dt= "2021-11-11"
+mock_start_dt = "20210101"
+mock_end_dt= "20211111"
 
 
 m = easyquant.MainEngine(broker, need_data,

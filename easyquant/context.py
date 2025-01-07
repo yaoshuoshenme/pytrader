@@ -19,7 +19,7 @@ class Context:
         self.change_dt(current_dt)
         self.user = user
         self.quotation = quotation
-        self.trade_days = self.quotation.get_all_trade_days()
+        self.trade_days = self.quotation.get_all_trade_days().tolist()
         self.is_trade_mode = trade_mode
 
     def is_trade_date(self, date: str):

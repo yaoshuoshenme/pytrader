@@ -14,8 +14,9 @@ class Strategy(StrategyTemplate):
     watch_stocks = ['000776']
 
     def init(self):
-        for stock_code in self.watch_stocks:
-            self.quotation_engine.watch(stock_code)
+        # for stock_code in self.watch_stocks:
+        #     self.quotation_engine.watch(stock_code)
+        pass
 
     def on_bar(self, context: Context, data: Dict[str, DataFrame]):
         print("on_bar事件")

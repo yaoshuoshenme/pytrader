@@ -41,7 +41,7 @@ class Quotation(metaclass=abc.ABCMeta):
         from persistence.mysql.db_config import DBHelper
         sql = "select * from stock_trade_days"
         days = DBHelper().get_all(sql, return_type='df')
-        return days
+        return days['cal_date']
 
     def get_price(self, security: str, date):
         df = self.get_bars(security, 1, unit='1d', end_dt=date, fields=['close', 'date'])

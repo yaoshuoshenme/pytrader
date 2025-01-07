@@ -5,7 +5,7 @@ from threading import Thread
 
 from ..event_engine import EventEngine, Event
 from ..quotation.quotation import Quotation
-
+from ..quotation.local_quotation import LocalQuotation
 
 class QuotationEngine:
     EventType = 'bar'
@@ -20,6 +20,7 @@ class QuotationEngine:
         """
         self.event_engine = event_engine
         self.quotation_source = quotation
+        self.is_mock = isinstance(quotation, LocalQuotation)
         self.is_active = True
 
         self.quotation_thread = Thread(target=self.push_quotation, name="QuotationEngine.%s" % self.EventType)
@@ -67,6 +68,11 @@ class QuotationEngine:
         self.stocks.remove(stock_code)
 
     def fetch_quotation(self, end_date=None):
+        # 如果是mock, 返回当天所有股票的行情
+        if self.is_mock:
+            return self.quotation_source.get_bars(None, 200, unit=self.bar_type,
+                                                        end_dt=end_date if end_date else datetime.datetime.now())
+        
         bars = {}
         for code in self.stocks:
             bars[code] = self.quotation_source.get_bars(code, 200, unit=self.bar_type,

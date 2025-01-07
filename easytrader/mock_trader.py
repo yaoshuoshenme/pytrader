@@ -59,16 +59,22 @@ class MockTrader(webtrader.WebTrader):
         return self.assets
 
     def update_balance(self, quotation_data):
-        prices = {}
-        for code in quotation_data:
-            prices[code] = quotation_data[code][-1:].close[0]
-
+        """
+        更新账户资金状况
+        :param quotation_data: DataFrame格式的行情数据，包含 ts_code 和 close 字段
+        """
+        # 创建股票代码和收盘价的映射字典
+        prices = dict(zip(quotation_data['ts_code'], quotation_data['close']))
+        
         market_value = 0
         for position in self.positions:
-            price = prices[position.stock_code] #现价
+            
+            # 获取当前价格，如果没有则使用上一次的价格
+            price = prices.get(position.stock_code, position.last_price)
             position.update(price)
             market_value += position.market_value
-        self.assets[0].market_value = market_value # 市值
+            
+        self.assets[0].market_value = market_value  # 更新市值
         self.assets[0].update(market_value, self.assets[0].enable_balance)
 
     def set_quotation(self, quotation):

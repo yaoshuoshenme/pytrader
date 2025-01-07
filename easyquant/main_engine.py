@@ -113,15 +113,15 @@ class MainEngine:
     def start_mock(self, start_date: str, end_date: str, strategy: StrategyTemplate):
         """ 启动回测 """
         self.user.set_quotation(self.quotation)
-        start_date_time = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date_time = datetime.strptime(end_date, '%Y-%m-%d')
+        start_date_time = datetime.strptime(start_date, '%Y%m%d')
+        end_date_time = datetime.strptime(end_date, '%Y%m%d')
 
         current_dt = start_date_time
 
         # 开始回测
         while current_dt <= end_date_time:
             # 跳过非交易日
-            if not self.context.is_trade_date(current_dt.strftime("%Y-%m-%d")):
+            if not self.context.is_trade_date(current_dt.strftime("%Y%m%d")):
                 current_dt = current_dt + timedelta(days=1)
                 continue
 
